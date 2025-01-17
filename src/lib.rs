@@ -188,7 +188,7 @@ impl Game {
         self.ship.update();
         
         // Update bullets and remove dead ones
-        self.bullets.retain(|bullet| bullet.update());
+        self.bullets.retain_mut(|bullet| bullet.update());
         
         // Update asteroids
         for asteroid in &mut self.asteroids {
@@ -198,6 +198,7 @@ impl Game {
         // Check bullet collisions
         let mut new_asteroids = Vec::new();
         let mut bullets_to_remove = Vec::new();
+        let mut asteroids_to_remove = Vec::new();
         
         for (bullet_idx, bullet) in self.bullets.iter().enumerate() {
             for (asteroid_idx, asteroid) in self.asteroids.iter().enumerate() {
@@ -205,11 +206,18 @@ impl Game {
                 let dy = bullet.position.y - asteroid.position.y;
                 if (dx * dx + dy * dy).sqrt() < asteroid.size {
                     bullets_to_remove.push(bullet_idx);
+                    asteroids_to_remove.push(asteroid_idx);
                     new_asteroids.extend(asteroid.split());
-                    self.asteroids.remove(asteroid_idx);
                     break;
                 }
             }
+        }
+
+        // Remove asteroids in reverse order to maintain correct indices
+        asteroids_to_remove.sort_unstable();
+        asteroids_to_remove.reverse();
+        for asteroid_idx in asteroids_to_remove {
+            self.asteroids.remove(asteroid_idx);
         }
 
         // Remove bullets in reverse order to maintain correct indices
@@ -251,5 +259,18 @@ impl Game {
 
     pub fn shoot(&mut self) {
         self.bullets.push(Bullet::new(&self.ship));
+    }
+
+    pub fn reset(&mut self) {
+        self.ship = Ship::new(400.0, 300.0);
+        self.bullets.clear();
+        self.asteroids.clear();
+        
+        // Create initial asteroids
+        for _ in 0..4 {
+            let x = Math::random() * 800.0;
+            let y = Math::random() * 600.0;
+            self.asteroids.push(Asteroid::new(x, y, 40.0));
+        }
     }
 } 

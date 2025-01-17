@@ -11,11 +11,27 @@
         }
         body {
             background: #333;
+            text-align: center;
+        }
+        #new-game {
+            margin: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #444;
+            color: white;
+            border: 2px solid white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #new-game:hover {
+            background: #555;
         }
     </style>
 </head>
 <body>
     <canvas id="game-canvas" width="800" height="600"></canvas>
+    <br>
+    <button id="new-game">New Game (R)</button>
     <script type="module">
         import init, { Game } from './pkg/wasm_asteroids.js';
 
@@ -32,8 +48,16 @@
                 if (e.key === ' ') {  // Space key for shooting
                     game.shoot();
                 }
+                if (e.key.toLowerCase() === 'r') {  // R key for reset
+                    game.reset();
+                }
             });
             document.addEventListener('keyup', (e) => keys.delete(e.key));
+            
+            // Add button click handler
+            document.getElementById('new-game').addEventListener('click', () => {
+                game.reset();
+            });
             
             function gameLoop() {
                 if (keys.has('ArrowLeft')) game.rotate(-0.1);
