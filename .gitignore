@@ -1,0 +1,33 @@
+# Rust build directory
+/target/
+
+# WebAssembly build directory
+/pkg/
+
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# System files
+.DS_Store
+Thumbs.db
+
+# npm (if you end up using npm for development tools)
+node_modules/
+package-lock.json
+
+# Debug files
+*.pdb
+
+# Environment variables
+.env
+.env.local
+
+# Build artifacts
+*.o
+*.so
+*.dylib
+*.dll
+*.wasm 

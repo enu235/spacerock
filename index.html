@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>WASM Asteroids</title>
+    <style>
+        canvas {
+            background: black;
+            display: block;
+            margin: 0 auto;
+        }
+        body {
+            background: #333;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="game-canvas" width="800" height="600"></canvas>
+    <script type="module">
+        import init, { Game } from './pkg/wasm_asteroids.js';
+
+        async function run() {
+            await init();
+            
+            const canvas = document.getElementById('game-canvas');
+            const game = new Game(canvas);
+            
+            const keys = new Set();
+            
+            document.addEventListener('keydown', (e) => {
+                keys.add(e.key);
+                if (e.key === ' ') {  // Space key for shooting
+                    game.shoot();
+                }
+            });
+            document.addEventListener('keyup', (e) => keys.delete(e.key));
+            
+            function gameLoop() {
+                if (keys.has('ArrowLeft')) game.rotate(-0.1);
+                if (keys.has('ArrowRight')) game.rotate(0.1);
+                if (keys.has('ArrowUp')) game.thrust();
+                
+                game.update();
+                game.render();
+                requestAnimationFrame(gameLoop);
+            }
+            
+            gameLoop();
+        }
+
+        run();
+    </script>
+</body>
+</html> 
