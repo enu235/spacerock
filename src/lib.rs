@@ -1,5 +1,5 @@
 use wasm_bindgen::prelude::*;
-use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement};
+use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement, HtmlAudioElement};
 use std::f64::consts::PI;
 use js_sys::Math;
 
@@ -157,6 +157,7 @@ pub struct Game {
     ctx: CanvasRenderingContext2d,
     asteroids: Vec<Asteroid>,
     bullets: Vec<Bullet>,
+    game_over: bool,
 }
 
 #[wasm_bindgen]
@@ -181,11 +182,27 @@ impl Game {
             ctx,
             asteroids,
             bullets: Vec::new(),
+            game_over: false,
         })
     }
 
     pub fn update(&mut self) {
+        if self.game_over {
+            return;
+        }
+
         self.ship.update();
+        
+        // Check ship-asteroid collisions
+        for asteroid in &self.asteroids {
+            let dx = self.ship.position.x - asteroid.position.x;
+            let dy = self.ship.position.y - asteroid.position.y;
+            if (dx * dx + dy * dy).sqrt() < asteroid.size + 10.0 {  // 10.0 is approximate ship radius
+                self.game_over = true;
+                play_sound("explosion-sound");
+                return;
+            }
+        }
         
         // Update bullets and remove dead ones
         self.bullets.retain_mut(|bullet| bullet.update());
@@ -204,7 +221,9 @@ impl Game {
             for (asteroid_idx, asteroid) in self.asteroids.iter().enumerate() {
                 let dx = bullet.position.x - asteroid.position.x;
                 let dy = bullet.position.y - asteroid.position.y;
-                if (dx * dx + dy * dy).sqrt() < asteroid.size {
+                let distance = (dx * dx + dy * dy).sqrt();
+
+                if distance < asteroid.size {
                     bullets_to_remove.push(bullet_idx);
                     asteroids_to_remove.push(asteroid_idx);
                     new_asteroids.extend(asteroid.split());
@@ -236,7 +255,9 @@ impl Game {
         self.ctx.set_stroke_style(&JsValue::from_str("white"));
         self.ctx.set_fill_style(&JsValue::from_str("white"));
         
-        self.ship.draw(&self.ctx);
+        if !self.game_over {
+            self.ship.draw(&self.ctx);
+        }
         
         for bullet in &self.bullets {
             bullet.draw(&self.ctx);
@@ -244,6 +265,14 @@ impl Game {
         
         for asteroid in &self.asteroids {
             asteroid.draw(&self.ctx);
+        }
+
+        if self.game_over {
+            self.ctx.set_font("48px Arial");
+            self.ctx.set_text_align("center");
+            self.ctx.fill_text("GAME OVER", 400.0, 300.0).unwrap();
+            self.ctx.set_font("24px Arial");
+            self.ctx.fill_text("Press R or click New Game to restart", 400.0, 350.0).unwrap();
         }
     }
 
@@ -262,6 +291,7 @@ impl Game {
     }
 
     pub fn reset(&mut self) {
+        self.game_over = false;
         self.ship = Ship::new(400.0, 300.0);
         self.bullets.clear();
         self.asteroids.clear();
@@ -273,4 +303,30 @@ impl Game {
             self.asteroids.push(Asteroid::new(x, y, 40.0));
         }
     }
-} 
+
+    pub fn is_game_over(&self) -> bool {
+        self.game_over
+    }
+}
+
+fn play_sound(sound_id: &str) {
+    let window = match web_sys::window() {
+        Some(win) => win,
+        None => return,
+    };
+
+    let document = match window.document() {
+        Some(doc) => doc,
+        None => return,
+    };
+
+    let element = match document.get_element_by_id(sound_id) {
+        Some(el) => el,
+        None => return,
+    };
+
+    if let Ok(audio) = element.dyn_into::<HtmlAudioElement>() {
+        let _ = audio.set_current_time(0.0);
+        let _ = audio.play();
+    }
+}

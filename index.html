@@ -27,6 +27,8 @@
             background: #555;
         }
     </style>
+    <audio id="shoot-sound" src="sounds/shoot.wav" preload="auto"></audio>
+    <audio id="explosion-sound" src="sounds/explosion.wav" preload="auto"></audio>
 </head>
 <body>
     <canvas id="game-canvas" width="800" height="600"></canvas>
@@ -60,9 +62,11 @@
             });
             
             function gameLoop() {
-                if (keys.has('ArrowLeft')) game.rotate(-0.1);
-                if (keys.has('ArrowRight')) game.rotate(0.1);
-                if (keys.has('ArrowUp')) game.thrust();
+                if (!game.is_game_over()) {
+                    if (keys.has('ArrowLeft')) game.rotate(-0.1);
+                    if (keys.has('ArrowRight')) game.rotate(0.1);
+                    if (keys.has('ArrowUp')) game.thrust();
+                }
                 
                 game.update();
                 game.render();

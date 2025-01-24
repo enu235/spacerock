@@ -28,3 +28,7 @@ Game Rules:
 - The smallest asteroids disappear when shot
 - Avoid letting asteroids hit your ship
 - Press R or click "New Game" to start over
+
+## Sound Credits
+- Laser sound effect: [credit source]
+- Explosion sound effect: [credit source]
