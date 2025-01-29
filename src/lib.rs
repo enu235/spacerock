@@ -60,13 +60,17 @@ struct Bullet {
 impl Bullet {
     fn new(ship: &Ship) -> Self {
         let speed = 10.0;
+        let start_position = Vector {
+            x: ship.position.x + 20.0 * ship.rotation.sin(),
+            y: ship.position.y - 20.0 * ship.rotation.cos(),
+        };
         Bullet {
-            position: ship.position.clone(),
+            position: start_position,
             velocity: Vector {
                 x: speed * ship.rotation.sin(),
                 y: -speed * ship.rotation.cos(),
             },
-            lifetime: 60, // frames the bullet lives for
+            lifetime: 60,
         }
     }
 
@@ -158,6 +162,7 @@ pub struct Game {
     asteroids: Vec<Asteroid>,
     bullets: Vec<Bullet>,
     game_over: bool,
+    score: i32,
 }
 
 #[wasm_bindgen]
@@ -183,6 +188,7 @@ impl Game {
             asteroids,
             bullets: Vec::new(),
             game_over: false,
+            score: 0,
         })
     }
 
@@ -226,6 +232,16 @@ impl Game {
                 if distance < asteroid.size {
                     bullets_to_remove.push(bullet_idx);
                     asteroids_to_remove.push(asteroid_idx);
+                    
+                    // Add score based on asteroid size
+                    self.score += if asteroid.size >= 40.0 {
+                        10  // Large asteroid
+                    } else if asteroid.size >= 20.0 {
+                        15  // Medium asteroid
+                    } else {
+                        25  // Small asteroid
+                    };
+                    
                     new_asteroids.extend(asteroid.split());
                     break;
                 }
@@ -255,6 +271,11 @@ impl Game {
         self.ctx.set_stroke_style(&JsValue::from_str("white"));
         self.ctx.set_fill_style(&JsValue::from_str("white"));
         
+        // Draw score at top left
+        self.ctx.set_font("24px Arial");
+        self.ctx.set_text_align("left");
+        self.ctx.fill_text(&format!("Score: {}", self.score), 20.0, 40.0).unwrap();
+        
         if !self.game_over {
             self.ship.draw(&self.ctx);
         }
@@ -272,7 +293,8 @@ impl Game {
             self.ctx.set_text_align("center");
             self.ctx.fill_text("GAME OVER", 400.0, 300.0).unwrap();
             self.ctx.set_font("24px Arial");
-            self.ctx.fill_text("Press R or click New Game to restart", 400.0, 350.0).unwrap();
+            self.ctx.fill_text(&format!("Final Score: {}", self.score), 400.0, 340.0).unwrap();
+            self.ctx.fill_text("Press R or click New Game to restart", 400.0, 380.0).unwrap();
         }
     }
 
@@ -288,6 +310,7 @@ impl Game {
 
     pub fn shoot(&mut self) {
         self.bullets.push(Bullet::new(&self.ship));
+        play_sound("shoot-sound");
     }
 
     pub fn reset(&mut self) {
@@ -295,6 +318,7 @@ impl Game {
         self.ship = Ship::new(400.0, 300.0);
         self.bullets.clear();
         self.asteroids.clear();
+        self.score = 0;
         
         // Create initial asteroids
         for _ in 0..4 {
@@ -307,6 +331,10 @@ impl Game {
     pub fn is_game_over(&self) -> bool {
         self.game_over
     }
+
+    pub fn get_score(&self) -> i32 {
+        self.score
+    }
 }
 
 fn play_sound(sound_id: &str) {
@@ -315,18 +343,46 @@ fn play_sound(sound_id: &str) {
         None => return,
     };
 
-    let document = match window.document() {
-        Some(doc) => doc,
-        None => return,
+    // Create AudioContext
+    let audio_context = match web_sys::AudioContext::new() {
+        Ok(ctx) => ctx,
+        Err(_) => return,
     };
 
-    let element = match document.get_element_by_id(sound_id) {
-        Some(el) => el,
-        None => return,
+    // Create oscillator
+    let oscillator = match audio_context.create_oscillator() {
+        Ok(osc) => osc,
+        Err(_) => return,
     };
 
-    if let Ok(audio) = element.dyn_into::<HtmlAudioElement>() {
-        let _ = audio.set_current_time(0.0);
-        let _ = audio.play();
+    // Create gain node for volume control
+    let gain = match audio_context.create_gain() {
+        Ok(g) => g,
+        Err(_) => return,
+    };
+
+    // Configure sound based on type
+    match sound_id {
+        "shoot-sound" => {
+            oscillator.set_type(web_sys::OscillatorType::Square);
+            oscillator.frequency().set_value(440.0); // A4 note
+            gain.gain().set_value(0.1); // Lower volume
+            let _ = gain.gain().linear_ramp_to_value_at_time(0.0, audio_context.current_time() + 0.1);
+        }
+        "explosion-sound" => {
+            oscillator.set_type(web_sys::OscillatorType::Sawtooth);
+            oscillator.frequency().set_value(100.0); // Low frequency
+            gain.gain().set_value(0.3);
+            let _ = gain.gain().linear_ramp_to_value_at_time(0.0, audio_context.current_time() + 0.3);
+        }
+        _ => return,
     }
+
+    // Connect nodes
+    let _ = oscillator.connect_with_audio_node(&gain);
+    let _ = gain.connect_with_audio_node(&audio_context.destination());
+
+    // Start and stop the sound
+    let _ = oscillator.start();
+    let _ = oscillator.stop_with_when(audio_context.current_time() + 0.3);
 }
