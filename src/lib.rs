@@ -163,6 +163,8 @@ pub struct Game {
     bullets: Vec<Bullet>,
     game_over: bool,
     score: i32,
+    lives: i32,
+    respawn_timer: i32,
 }
 
 #[wasm_bindgen]
@@ -189,6 +191,8 @@ impl Game {
             bullets: Vec::new(),
             game_over: false,
             score: 0,
+            lives: 3,
+            respawn_timer: 0,
         })
     }
 
@@ -197,16 +201,32 @@ impl Game {
             return;
         }
 
+        // Decrease respawn timer if active
+        if self.respawn_timer > 0 {
+            self.respawn_timer -= 1;
+        }
+
         self.ship.update();
         
-        // Check ship-asteroid collisions
-        for asteroid in &self.asteroids {
-            let dx = self.ship.position.x - asteroid.position.x;
-            let dy = self.ship.position.y - asteroid.position.y;
-            if (dx * dx + dy * dy).sqrt() < asteroid.size + 10.0 {  // 10.0 is approximate ship radius
-                self.game_over = true;
-                play_sound("explosion-sound");
-                return;
+        // Check ship-asteroid collisions only if not in respawn period
+        if self.respawn_timer == 0 {
+            for asteroid in &self.asteroids {
+                let dx = self.ship.position.x - asteroid.position.x;
+                let dy = self.ship.position.y - asteroid.position.y;
+                if (dx * dx + dy * dy).sqrt() < asteroid.size + 10.0 {
+                    self.lives -= 1;
+                    play_sound("explosion-sound");
+                    
+                    if self.lives <= 0 {
+                        self.game_over = true;
+                        return;
+                    } else {
+                        // Respawn ship in center with temporary invulnerability
+                        self.ship = Ship::new(400.0, 300.0);
+                        self.respawn_timer = 180; // 3 seconds at 60 FPS
+                        return;
+                    }
+                }
             }
         }
         
@@ -276,8 +296,15 @@ impl Game {
         self.ctx.set_text_align("left");
         self.ctx.fill_text(&format!("Score: {}", self.score), 20.0, 40.0).unwrap();
         
+        // Draw lives at top right
+        self.ctx.set_text_align("right");
+        self.ctx.fill_text(&format!("Lives: {}", self.lives), 780.0, 40.0).unwrap();
+        
         if !self.game_over {
-            self.ship.draw(&self.ctx);
+            // Make ship blink during respawn period
+            if self.respawn_timer == 0 || self.respawn_timer % 20 > 10 {
+                self.ship.draw(&self.ctx);
+            }
         }
         
         for bullet in &self.bullets {
@@ -319,6 +346,8 @@ impl Game {
         self.bullets.clear();
         self.asteroids.clear();
         self.score = 0;
+        self.lives = 3;
+        self.respawn_timer = 0;
         
         // Create initial asteroids
         for _ in 0..4 {
