@@ -1,5 +1,5 @@
 use wasm_bindgen::prelude::*;
-use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement, HtmlAudioElement};
+use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement};
 use std::f64::consts::PI;
 use js_sys::Math;
 
@@ -288,7 +288,7 @@ impl Game {
 
     pub fn render(&self) {
         self.ctx.clear_rect(0.0, 0.0, 800.0, 600.0);
-        self.ctx.set_stroke_style(&JsValue::from_str("white"));
+        self.ctx.set_stroke_style(&JsValue::from_str("white").into());
         self.ctx.set_fill_style(&JsValue::from_str("white"));
         
         // Draw score at top left
@@ -333,6 +333,7 @@ impl Game {
         let thrust = 0.1;
         self.ship.velocity.x += thrust * self.ship.rotation.sin();
         self.ship.velocity.y -= thrust * self.ship.rotation.cos();
+        play_sound("thrust-sound");
     }
 
     pub fn shoot(&mut self) {
@@ -367,7 +368,7 @@ impl Game {
 }
 
 fn play_sound(sound_id: &str) {
-    let window = match web_sys::window() {
+    let _window = match web_sys::window() {
         Some(win) => win,
         None => return,
     };
@@ -403,6 +404,16 @@ fn play_sound(sound_id: &str) {
             oscillator.frequency().set_value(100.0); // Low frequency
             gain.gain().set_value(0.3);
             let _ = gain.gain().linear_ramp_to_value_at_time(0.0, audio_context.current_time() + 0.3);
+        }
+        "thrust-sound" => {
+            oscillator.set_type(web_sys::OscillatorType::Sawtooth);
+            oscillator.frequency().set_value(200.0); // Low whoosh sound
+            gain.gain().set_value(0.08); // Very quiet
+            let _ = oscillator.frequency().linear_ramp_to_value_at_time(
+                100.0,
+                audio_context.current_time() + 0.1
+            ); // Frequency drop for whoosh effect
+            let _ = gain.gain().linear_ramp_to_value_at_time(0.0, audio_context.current_time() + 0.1);
         }
         _ => return,
     }
