@@ -11,7 +11,15 @@ Before you begin, ensure you have the following installed:
 
 ## Building the Game
 
-Work in progress
+```bash
+wasm-pack build --target web
+```
+
+## Running the Game
+
+```bash
+python3 -m http.server 8080
+```
 
 ## How to Play
 
