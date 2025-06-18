@@ -2,36 +2,245 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>WASM Asteroids</title>
+    <title>WASM Asteroids - Enhanced Edition</title>
     <style>
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        h1 {
+            font-size: 3em;
+            text-shadow: 0 0 20px #00ffff;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #00ffff, #ff0080);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+        
         canvas {
             background: black;
             display: block;
-            margin: 0 auto;
+            margin: 20px auto;
+            border: 3px solid #00ffff;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
         }
-        body {
+        
+        .controls {
+            max-width: 800px;
+            margin: 20px auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            font-size: 0.9em;
+        }
+        
+        .control-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+        
+        .control-section h3 {
+            color: #00ffff;
+            margin-top: 0;
+            font-size: 1.1em;
+        }
+        
+        .control-item {
+            margin: 8px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .key {
             background: #333;
-            text-align: center;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #00ffff;
         }
+        
+        .features {
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: left;
+        }
+        
+        .features h3 {
+            color: #ff0080;
+            text-align: center;
+            font-size: 1.5em;
+            text-shadow: 0 0 10px #ff0080;
+        }
+        
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .feature {
+            background: rgba(255, 0, 128, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #ff0080;
+        }
+        
+        .feature strong {
+            color: #ff0080;
+        }
+        
         #new-game {
             margin: 20px;
-            padding: 10px 20px;
-            font-size: 16px;
-            background: #444;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #00ffff, #0088cc);
             color: white;
-            border: 2px solid white;
+            border: none;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0, 255, 255, 0.3);
+            transition: all 0.3s ease;
         }
+        
         #new-game:hover {
-            background: #555;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 255, 255, 0.5);
+            background: linear-gradient(135deg, #00ccff, #0066aa);
+        }
+        
+        #new-game:active {
+            transform: translateY(0);
+        }
+        
+        .warning {
+            background: rgba(255, 255, 0, 0.1);
+            border: 1px solid #ffaa00;
+            color: #ffaa00;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 15px auto;
+            max-width: 600px;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 600px) {
+            .controls {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            canvas {
+                transform: scale(0.8);
+            }
         }
     </style>
 </head>
 <body>
+    <h1>🚀 ASTEROIDS 🌌</h1>
+    <div class="subtitle">Enhanced Edition with Levels & Special Effects</div>
+    
     <canvas id="game-canvas" width="800" height="600"></canvas>
-    <br>
-    <button id="new-game">New Game (R)</button>
+    
+    <button id="new-game">🎮 New Game (R) 🎮</button>
+    
+    <div class="controls">
+        <div class="control-section">
+            <h3>🎮 Controls</h3>
+            <div class="control-item">
+                <span>Rotate Left</span>
+                <span class="key">←</span>
+            </div>
+            <div class="control-item">
+                <span>Rotate Right</span>
+                <span class="key">→</span>
+            </div>
+            <div class="control-item">
+                <span>Thrust</span>
+                <span class="key">↑</span>
+            </div>
+            <div class="control-item">
+                <span>Shoot</span>
+                <span class="key">SPACE</span>
+            </div>
+            <div class="control-item">
+                <span>New Game</span>
+                <span class="key">R</span>
+            </div>
+        </div>
+        
+        <div class="control-section">
+            <h3>🎯 Scoring</h3>
+            <div class="control-item">
+                <span>Large Asteroid</span>
+                <span class="key">20 pts</span>
+            </div>
+            <div class="control-item">
+                <span>Medium Asteroid</span>
+                <span class="key">50 pts</span>
+            </div>
+            <div class="control-item">
+                <span>Small Asteroid</span>
+                <span class="key">100 pts</span>
+            </div>
+            <div class="control-item">
+                <span>Special Asteroid</span>
+                <span class="key">100+ pts</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="features">
+        <h3>✨ Special Features</h3>
+        <div class="feature-list">
+            <div class="feature">
+                <strong>Progressive Levels:</strong> Each level increases asteroid speed and adds challenges. Every 4th level adds an extra asteroid!
+            </div>
+            <div class="feature">
+                <strong>Special Asteroids:</strong> Rare pink asteroids (1 in 50 for testing) with electric effects that disrupt your ship when destroyed!
+            </div>
+            <div class="feature">
+                <strong>Ship Disruptions:</strong> Special asteroids can disable controls, scramble them, or make your ship unstable for 2 seconds.
+            </div>
+            <div class="feature">
+                <strong>Level Transitions:</strong> 5-second countdown between levels to prepare for the next challenge.
+            </div>
+            <div class="feature">
+                <strong>Enhanced Scoring:</strong> Higher-level asteroids give bonus points. Smaller asteroids are worth more!
+            </div>
+            <div class="feature">
+                <strong>Spectacular Effects:</strong> Shock waves, electric arcs, and enhanced sound effects for an immersive experience.
+            </div>
+        </div>
+    </div>
+    
+    <div class="warning">
+        ⚠️ <strong>Warning:</strong> Special asteroids appear with pink electric effects. Destroying them creates a shock wave and temporarily disrupts your ship's systems!
+    </div>
+    
     <script type="module">
         import init, { Game } from './pkg/wasm_asteroids.js';
 
@@ -46,12 +255,14 @@
             document.addEventListener('keydown', (e) => {
                 keys.add(e.key);
                 if (e.key === ' ') {  // Space key for shooting
+                    e.preventDefault(); // Prevent page scroll
                     game.shoot();
                 }
                 if (e.key.toLowerCase() === 'r') {  // R key for reset
                     game.reset();
                 }
             });
+            
             document.addEventListener('keyup', (e) => keys.delete(e.key));
             
             // Add button click handler
@@ -74,7 +285,7 @@
             gameLoop();
         }
 
-        run();
+        run().catch(console.error);
     </script>
 </body>
 </html> 
