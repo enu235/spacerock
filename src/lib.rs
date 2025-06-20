@@ -309,8 +309,9 @@ impl Game {
             let x = Math::random() * 800.0;
             let y = Math::random() * 600.0;
             
-            // 1 in 50 chance for special asteroid (increased for testing)
-            if Math::random() < 1.0 / 50.0 {
+            // Random chance between 1 in 100 to 1 in 300 for special rock
+            let special_chance = 100.0 + Math::random() * 200.0; // Random between 100-300
+            if Math::random() < 1.0 / special_chance {
                 self.asteroids.push(Asteroid::new_special(x, y, 40.0));
             } else {
                 self.asteroids.push(Asteroid::new(x, y, 40.0));

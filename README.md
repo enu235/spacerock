@@ -1,25 +1,71 @@
-# 🚀 WASM Asteroids - Enhanced Edition 🌌
+# 🚀 WASM SpaceRock - Enhanced Edition 🌌
 
-A WebAssembly implementation of the classic Asteroids game using Rust, featuring progressive levels, special asteroids with unique effects, and immersive gameplay mechanics.
+A WebAssembly implementation of the classic SpaceRock game using Rust, featuring progressive levels, special space rocks with unique effects, and immersive gameplay mechanics.
+
+## ⚡ Quick Start
+
+### 🎮 One-Click Setup & Play
+
+For the fastest way to get SpaceRock running, use our automated setup scripts:
+
+#### **Unix/Linux/macOS Users:**
+```bash
+# Download and run the setup script
+curl -sSL https://raw.githubusercontent.com/enu235/spacerock/main/quick-start.sh | bash
+```
+
+Or download the script first:
+```bash
+wget https://raw.githubusercontent.com/enu235/spacerock/main/quick-start.sh
+chmod +x quick-start.sh
+./quick-start.sh
+```
+
+#### **Windows Users:**
+1. Download [`quick-start.bat`](https://raw.githubusercontent.com/enu235/spacerock/main/quick-start.bat)
+2. Double-click the file or run from Command Prompt:
+```cmd
+quick-start.bat
+```
+
+### 🔧 What the Scripts Do:
+- ✅ Check for Rust installation (install instructions if missing)
+- ✅ Check for wasm-pack (auto-install if possible)
+- ✅ Check for Git (install instructions if missing)  
+- ✅ Check for web server capability (Python 3 or PHP recommended, Node.js optional)
+- ✅ Clone the repository automatically
+- ✅ Build the WebAssembly package
+- ✅ Start local web server
+- ✅ Open the game in your browser
+
+**That's it! The game will be running and ready to play!** 🎯
+
+### 📋 What You Actually Need:
+- **Required**: Rust + wasm-pack (for building WebAssembly)
+- **Required**: Git (for downloading the code)
+- **Required**: Web server (Python 3, PHP, or Node.js - any one will work)
+- **Not Required**: Node.js specifically (only if you want to use it as a web server option)
+
+---
 
 ## ✨ New Features
 
 ### 🎯 Progressive Level System
-- **Dynamic Difficulty:** Asteroid speed increases with each level
+- **Dynamic Difficulty:** Space rock speed increases with each level
 - **Level Cycles:** Every 3 levels, speed resets and increases again
-- **Bonus Asteroids:** Every 4th level adds an extra asteroid to the field
+- **Bonus Space Rocks:** Every 4th level adds an extra space rock to the field
 - **5-Second Countdown:** Prepare between levels with dramatic transitions
 - **Score Multipliers:** Higher levels provide bonus points
 
-### ⚡ Special Asteroids
-- **Rare Spawning:** 1 in 50 chance for special asteroids (increased for testing)
+### ⚡ Special Space Rocks
+- **Rare Spawning:** Random chance between 1 in 100 to 1 in 300 for special space rocks
 - **Visual Effects:** Pink electric arcs and pulsing animations
-- **No Splitting:** Special asteroids are completely destroyed when hit
+- **No Splitting:** Special space rocks are completely destroyed when hit
 - **High Rewards:** 100+ points (scales with level)
 - **Shock Wave Effects:** Spectacular expanding ring animations
 
 ### 🛸 Ship Disruption System
-When special asteroids are destroyed, one of three random disruptions occurs for 2 seconds:
+When special space rocks are destroyed, one of three random disruptions occurs for 2 seconds:
 
 1. **Systems Disabled:** All controls are temporarily disabled
 2. **Controls Scrambled:** Movement controls are reversed/altered
@@ -27,7 +73,7 @@ When special asteroids are destroyed, one of three random disruptions occurs for
 
 ### 🎵 Enhanced Audio
 - **Dynamic Sound Effects:** Improved thrust, shooting, and explosion sounds
-- **Special Effects Audio:** Unique sound for special asteroid destruction
+- **Special Effects Audio:** Unique sound for special space rock destruction
 - **Level Progression:** Musical chimes for level completion
 
 ### 🎨 Visual Enhancements
@@ -47,7 +93,7 @@ Before you begin, ensure you have the following installed:
 
 ```bash
 # Clone the repository
-git clone <your-repo-url>
+git clone https://github.com/enu235/spacerock.git
 cd astroids
 
 # Build the WebAssembly package
@@ -73,22 +119,22 @@ Then open your browser to `http://localhost:8080`
 - **R key or "New Game" button:** Start a new game
 
 ### Scoring System
-- **Large Asteroid:** 20 points × level multiplier
-- **Medium Asteroid:** 50 points × level multiplier  
-- **Small Asteroid:** 100 points × level multiplier
-- **Special Asteroid:** 100+ points × level multiplier
+- **Large Space Rock:** 20 points × level multiplier
+- **Medium Space Rock:** 50 points × level multiplier  
+- **Small Space Rock:** 100 points × level multiplier
+- **Special Space Rock:** 100+ points × level multiplier
 
 ### Level Progression
-- Clear all asteroids to advance to the next level
+- Clear all space rocks to advance to the next level
 - Speed increases every level within 3-level cycles
-- Every 4th level adds an additional asteroid
+- Every 4th level adds an additional space rock
 - Score multipliers increase every 3 levels
 
 ### Special Mechanics
-- **Watch for Special Asteroids:** Pink asteroids with electric effects
-- **Prepare for Disruption:** Special asteroids cause temporary control issues
+- **Watch for Special Space Rocks:** Pink space rocks with electric effects
+- **Prepare for Disruption:** Special space rocks cause temporary control issues
 - **Strategic Planning:** Use level countdown time to position yourself
-- **Risk vs Reward:** Special asteroids give high points but create challenges
+- **Risk vs Reward:** Special space rocks give high points but create challenges
 
 ## 🛠️ Technical Details
 
@@ -101,7 +147,7 @@ Then open your browser to `http://localhost:8080`
 
 ### Architecture
 - **Game Loop:** 60 FPS rendering with `requestAnimationFrame`
-- **Entity System:** Modular ship, asteroid, bullet, and effect objects
+- **Entity System:** Modular ship, space rock, bullet, and effect objects
 - **State Management:** Comprehensive game state with level progression
 - **Effect System:** Particle effects and visual feedback
 - **Audio Engine:** Procedural sound generation
@@ -109,8 +155,8 @@ Then open your browser to `http://localhost:8080`
 ## 🎯 Game Strategy Tips
 
 1. **Master the Physics:** Use momentum and wrapping to your advantage
-2. **Target Priority:** Focus on large asteroids first to prevent splitting
-3. **Special Asteroid Timing:** Plan your approach to special asteroids carefully
+2. **Target Priority:** Focus on large space rocks first to prevent splitting
+3. **Special Space Rock Timing:** Plan your approach to special space rocks carefully
 4. **Disruption Survival:** Stay calm during control disruptions
 5. **Level Preparation:** Use countdown time to position optimally
 6. **Score Optimization:** Higher levels give better score multipliers
@@ -118,7 +164,7 @@ Then open your browser to `http://localhost:8080`
 ## 🚀 Future Enhancements
 
 - **Power-ups:** Temporary abilities and weapons
-- **Boss Asteroids:** Unique challenging enemies
+- **Boss Space Rocks:** Unique challenging enemies
 - **Multiplayer Mode:** Cooperative and competitive gameplay
 - **Achievement System:** Unlock rewards and challenges
 - **Custom Ship Designs:** Visual customization options
@@ -137,7 +183,7 @@ This project is open source. Please check the license file for details.
 
 ## 🎮 Credits
 
-- **Original Asteroids:** Inspired by Atari's classic 1979 arcade game
+- **Original SpaceRock:** Inspired by Atari's classic 1979 arcade game Asteroids
 - **Enhanced Features:** Modern gameplay mechanics and visual effects
 - **Audio Design:** Procedural sound generation using Web Audio API
 - **Visual Effects:** Custom particle systems and animations
@@ -146,4 +192,4 @@ This project is open source. Please check the license file for details.
 
 **Made with 💖 and Rust** 
 
-Enjoy the enhanced Asteroids experience! 🌌✨
+Enjoy the enhanced SpaceRock experience! 🌌✨

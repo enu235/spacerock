@@ -1,9 +1,9 @@
 [package]
-name = "wasm-asteroids"
+name = "wasm-spacerock"
 version = "0.1.0"
 edition = "2021"
-description = "A WebAssembly implementation of the classic Asteroids game using Rust with enhanced features including progressive levels, special asteroids, and immersive gameplay mechanics"
-repository = "https://github.com/your-username/wasm-asteroids"
+description = "A WebAssembly implementation of the classic SpaceRock game using Rust with enhanced features including progressive levels, special space rocks, and immersive gameplay mechanics"
+repository = "https://github.com/your-username/wasm-spacerock"
 license = "MIT"
 
 [lib]

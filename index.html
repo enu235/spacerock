@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>WASM Asteroids - Enhanced Edition</title>
+    <title>WASM SpaceRock - Enhanced Edition</title>
     <style>
         body {
             background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
@@ -160,7 +160,7 @@
     </style>
 </head>
 <body>
-    <h1>🚀 ASTEROIDS 🌌</h1>
+    <h1>🚀 SPACEROCK 🌌</h1>
     <div class="subtitle">Enhanced Edition with Levels & Special Effects</div>
     
     <canvas id="game-canvas" width="800" height="600"></canvas>
@@ -195,19 +195,19 @@
         <div class="control-section">
             <h3>🎯 Scoring</h3>
             <div class="control-item">
-                <span>Large Asteroid</span>
+                <span>Large Space Rock</span>
                 <span class="key">20 pts</span>
             </div>
             <div class="control-item">
-                <span>Medium Asteroid</span>
+                <span>Medium Space Rock</span>
                 <span class="key">50 pts</span>
             </div>
             <div class="control-item">
-                <span>Small Asteroid</span>
+                <span>Small Space Rock</span>
                 <span class="key">100 pts</span>
             </div>
             <div class="control-item">
-                <span>Special Asteroid</span>
+                <span>Special Space Rock</span>
                 <span class="key">100+ pts</span>
             </div>
         </div>
@@ -217,19 +217,19 @@
         <h3>✨ Special Features</h3>
         <div class="feature-list">
             <div class="feature">
-                <strong>Progressive Levels:</strong> Each level increases asteroid speed and adds challenges. Every 4th level adds an extra asteroid!
+                <strong>Progressive Levels:</strong> Each level increases space rock speed and adds challenges. Every 4th level adds an extra space rock!
             </div>
             <div class="feature">
-                <strong>Special Asteroids:</strong> Rare pink asteroids (1 in 50 for testing) with electric effects that disrupt your ship when destroyed!
+                <strong>Special Space Rocks:</strong> Rare pink space rocks (1 in 100-300 chance) with electric effects that disrupt your ship when destroyed!
             </div>
             <div class="feature">
-                <strong>Ship Disruptions:</strong> Special asteroids can disable controls, scramble them, or make your ship unstable for 2 seconds.
+                <strong>Ship Disruptions:</strong> Special space rocks can disable controls, scramble them, or make your ship unstable for 2 seconds.
             </div>
             <div class="feature">
                 <strong>Level Transitions:</strong> 5-second countdown between levels to prepare for the next challenge.
             </div>
             <div class="feature">
-                <strong>Enhanced Scoring:</strong> Higher-level asteroids give bonus points. Smaller asteroids are worth more!
+                <strong>Enhanced Scoring:</strong> Higher-level space rocks give bonus points. Smaller space rocks are worth more!
             </div>
             <div class="feature">
                 <strong>Spectacular Effects:</strong> Shock waves, electric arcs, and enhanced sound effects for an immersive experience.
@@ -238,11 +238,11 @@
     </div>
     
     <div class="warning">
-        ⚠️ <strong>Warning:</strong> Special asteroids appear with pink electric effects. Destroying them creates a shock wave and temporarily disrupts your ship's systems!
+        ⚠️ <strong>Warning:</strong> Special space rocks appear with pink electric effects. Destroying them creates a shock wave and temporarily disrupts your ship's systems!
     </div>
     
     <script type="module">
-        import init, { Game } from './pkg/wasm_asteroids.js';
+        import init, { Game } from './pkg/wasm_spacerock.js';
 
         async function run() {
             await init();
