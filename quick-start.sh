@@ -116,26 +116,26 @@ find_python() {
 
 # Check for web server capability
 check_web_server() {
-    print_status "Checking for web server capability..."
-    
+    print_status "Checking for web server capability..." >&2
+
     # Priority: Python 3 (most common) > PHP (often pre-installed) > Node.js (optional)
     local python_cmd=$(find_python)
     if [ $? -eq 0 ]; then
-        print_success "Python 3 found: will use built-in HTTP server"
+        print_success "Python 3 found: will use built-in HTTP server" >&2
         echo "$python_cmd"
         return 0
     elif command_exists php; then
-        print_success "PHP found: will use built-in server"
+        print_success "PHP found: will use built-in server" >&2
         echo "php"
         return 0
     elif command_exists npx; then
-        print_success "Node.js/npx found: will use http-server (optional)"
+        print_success "Node.js/npx found: will use http-server (optional)" >&2
         echo "npx"
         return 0
     else
-        print_warning "No suitable web server found."
-        print_warning "Please install Python 3 or PHP to run the local server."
-        print_warning "Node.js is optional but can also provide a web server."
+        print_warning "No suitable web server found." >&2
+        print_warning "Please install Python 3 or PHP to run the local server." >&2
+        print_warning "Node.js is optional but can also provide a web server." >&2
         echo "none"
         return 1
     fi
